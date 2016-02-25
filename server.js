@@ -8,10 +8,6 @@ var PORT = process.env.NODE_ENV || 9001;
 
 var app = express();
 
-app.get("/", function(req, res) {
-  res.render("home");
-});
-
 app.engine("handlebars", expressHandlebars({
   defaultLayout: "main"
 }));
@@ -24,6 +20,14 @@ app.listen(PORT, function() {
 
 app.use("/static", express.static("public"));
 
+//routes
+app.get("/", function(req, res) {
+  res.render("home");
+});
+
+app.get("/login", function(req, res) {
+  res.render("login");
+});
 // var sequelize = new Sequelize(process.env.DATABASE_URL);
 
 // var Places = sequelize.define("place", {
