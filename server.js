@@ -85,15 +85,15 @@ var Places = sequelize.define("place", {
 
 
  sequelize.sync().then(function(){
-
+   app.listen(PORT, function() {
+     console.log("LISTENING ON %s", PORT);
+   });
 
  }).catch(function(err){
+    console.log("could not sync to db because of following error");
+    console.log(err);
 
  });
 
-
-app.listen(PORT, function() {
-  console.log("LISTENING ON %s", PORT);
-});
 
 
