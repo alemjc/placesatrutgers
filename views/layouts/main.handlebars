@@ -2,8 +2,28 @@
 <html>
 <head>
 	<title>This is the main handlebars page</title>
+  <!-- Materilize Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <!--Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="static/css/styles.css">
 </head>
 <body>
+<nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">YelpR</a>
+      <ul id="nav-mobile" class="leftLinks left hide-on-med-and-down">
+        <li><a href="#"><i class="fa fa-cutlery"></i> Food</a></li>
+        <li><a href="#"><i class="fa fa-shopping-cart"></i> Shopping</a></li>
+        <li><a href="#"><i class="fa fa-television"></i> Entertainment</a></li>
+      </ul>
+      <ul id="nav-mobile" class="rightLinks right hide-on-med-and-down">
+        <li><a href="#">Log In</a></li>
+        <li><a href="#">Register</a></li>
+      </ul>
+    </div>
+  </nav>
 	{{{ body }}}
 </body>
 </html>
