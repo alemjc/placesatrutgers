@@ -20,7 +20,7 @@ app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
 
-var sequelize = new Sequelize(process.env.DATABASE_URL);
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
      address:{
