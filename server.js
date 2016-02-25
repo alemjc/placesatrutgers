@@ -4,7 +4,7 @@
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
-var PORT = process.env.NODE_ENV || 9001;
+var PORT = process.env.PORT || 9001;
 
 var app = express();
 
