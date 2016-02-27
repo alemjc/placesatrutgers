@@ -65,7 +65,6 @@ passport.use(new LocalStrategy({
   }));
 
 
-
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
@@ -129,11 +128,13 @@ var Places = sequelize.define("place", {
  Users.belongsToMany(Places,{through:Ratings});
  Places.belongsToMany(Users,{through:Ratings});
 
-
-
   //routes
   app.get("/", function(req, res) {
     res.render("home");
+  });
+
+  app.get("/register", function(req, res) {
+    res.render("register");
   });
 
   app.get("/login", function(req, res) {
