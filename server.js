@@ -22,7 +22,7 @@ app.get("/", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("login");
+  res.render("login" ,{ msg: "Your username and/or your password is incorrect!"}); 
 });
 
 app.get("/register", function(req, res) {
