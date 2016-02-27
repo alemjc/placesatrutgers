@@ -9,6 +9,7 @@ var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
+var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
 var app = express();
