@@ -65,7 +65,13 @@ passport.use(new LocalStrategy({
   }));
 
 
-var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  }
+});
 
 app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
   store: new SequelizeStore({
