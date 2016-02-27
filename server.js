@@ -189,8 +189,8 @@ var Places = sequelize.define("place", {
 
   app.post("/register", function(req, res){
     Users
-      .create({userName:req.userName, firstName:req.first_name, lastName:req.last_name,
-      password: req.password, birthday:req.birthday})
+      .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
+      password: req.body.password, birthday:req.body.birthday})
       .then(function(){
         res.redirect("/login");
       })
