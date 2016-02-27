@@ -142,6 +142,13 @@ var Places = sequelize.define("place", {
    birthday:{
      type:Sequelize.STRING
    }
+
+   ,
+   hooks:{
+     beforeCreate: function(input){
+       input.password = bcrypt.hashSync(input.password,10);
+     }
+   }
  });
 
  var Ratings = sequelize.define("rating",{
@@ -177,6 +184,20 @@ var Places = sequelize.define("place", {
       failureFlash:true
     }
   ));
+
+  app.post("/register", function(req, res){
+    Users
+      .create({userName:req.userName, firstName:req.first_name, lastName:req.last_name,
+      password: req.password, birthday:req.birthday})
+      .then(function(){
+        res.redirect("/login");
+      })
+      .catch(function(err){
+        if(err){
+          res.redirect("/register");
+        }
+      });
+  });
 
 
  sequelize.sync().then(function(){
