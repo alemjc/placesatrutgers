@@ -65,6 +65,14 @@ passport.use(new LocalStrategy({
   }));
 
 
+if(process.env.NODE_ENV === 'production') {
+  // FOR HEROKU DEPLOY
+} 
+else {
+  // FOR TESTING LOCALLY
+  require("dotenv").config({path:"./DBCreds.env"});
+}
+
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
