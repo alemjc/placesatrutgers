@@ -9,6 +9,7 @@ var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
+var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
 var app = express();
@@ -20,7 +21,6 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
-app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -65,6 +65,7 @@ passport.use(new LocalStrategy({
   }));
 
 
+
 if(process.env.NODE_ENV === 'production') {
   // FOR HEROKU DEPLOY
 } 
@@ -73,7 +74,19 @@ else {
   require("dotenv").config({path:"./DBCreds.env"});
 }
 
-var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  }
+});
+
+app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
+  store: new SequelizeStore({
+    db: sequelize
+  })
+}));
 
 var Places = sequelize.define("place", {
      address:{
