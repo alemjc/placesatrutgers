@@ -66,7 +66,10 @@ passport.use(new LocalStrategy({
 
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
-app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true, store: sequelize}));
+app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
+  store: new SequelizeStore({
+                db: sequelize
+  })}));
 
 var Places = sequelize.define("place", {
      address:{
