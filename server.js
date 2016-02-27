@@ -9,10 +9,6 @@ var PORT = process.env.PORT || 9001;
 
 var app = express();
 
-app.get("/", function(req, res) {
-  res.render("home");
-});
-
 app.engine("handlebars", expressHandlebars({
   defaultLayout: "main"
 }));
@@ -20,6 +16,15 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
+
+//routes
+app.get("/", function(req, res) {
+  res.render("home");
+});
+
+app.get("/login", function(req, res) {
+  res.render("login");
+});
 
 var sequelize = new Sequelize(process.env.DBURL,{pool: {
   max: 5,
@@ -99,6 +104,3 @@ var Places = sequelize.define("place", {
     console.log(err);
 
  });
-
-
-
