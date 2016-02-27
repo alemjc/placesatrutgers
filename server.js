@@ -20,7 +20,6 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
-app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -66,6 +65,8 @@ passport.use(new LocalStrategy({
 
 
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+
+app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true, store: sequelize}));
 
 var Places = sequelize.define("place", {
      address:{
