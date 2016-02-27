@@ -69,6 +69,15 @@ passport.use(new LocalStrategy({
   }));
 
 
+
+if(process.env.NODE_ENV === 'production') {
+  // FOR HEROKU DEPLOY
+} 
+else {
+  // FOR TESTING LOCALLY
+  require("dotenv").config({path:"./DBCreds.env"});
+}
+
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
   pool: {
     max: 5,
@@ -79,8 +88,9 @@ var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
 
 app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
   store: new SequelizeStore({
-                db: sequelize
-  })}));
+    db: sequelize
+  })
+}));
 
 var Places = sequelize.define("place", {
      address:{
