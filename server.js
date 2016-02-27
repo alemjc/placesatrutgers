@@ -20,7 +20,7 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
-app.use(expresssession({secret:"", resave:true, saveUninitialized:true}));
+app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
