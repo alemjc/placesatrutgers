@@ -113,43 +113,45 @@ var Places = sequelize.define("place", {
 
  });
 
- var Users = sequelize.define("user",{
-   firstName:{
-     type:Sequelize.STRING,
-     allowNull:false
+ var Users = sequelize.define("user", {
+   firstName: {
+     type: Sequelize.STRING,
+     allowNull: false
    },
-   lastName:{
-     type:Sequelize.STRING,
-     allowNull:false
+   lastName: {
+     type: Sequelize.STRING,
+     allowNull: false
    },
 
-   userName:{
-     type:Sequelize.STRING,
-     allowNull:false,
-     validate:{
-       len:[5,20]
+   userName: {
+     type: Sequelize.STRING,
+     allowNull: false,
+     validate: {
+       len: [5, 20]
      }
    },
 
-   password:{
-     type:Sequelize.STRING,
-     allowNull:false,
-     validate:{
-       len:[5,2000]
+   password: {
+     type: Sequelize.STRING,
+     allowNull: false,
+     validate: {
+       len: [5, 2000]
      }
    },
 
-   birthday:{
-     type:Sequelize.STRING
+   birthday: {
+     type: Sequelize.STRING
    }
+ },
+  {
+    hooks:{
+      beforeCreate: function(input){
+        input.password = bcrypt.hashSync(input.password,10);
+      }
+    }
 
-   ,
-   hooks:{
-     beforeCreate: function(input){
-       input.password = bcrypt.hashSync(input.password,10);
-     }
-   }
- });
+  }
+ );
 
  var Ratings = sequelize.define("rating",{
    comment:{
