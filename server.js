@@ -4,7 +4,6 @@
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
-var url = require("url");
 var PORT = process.env.PORT || 9001;
 
 var app = express();
@@ -26,7 +25,6 @@ app.get("/login", function(req, res) {
   res.render("login");
 });
 
-console.log(DBURL);
 
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL,{pool: {
   max: 5,
