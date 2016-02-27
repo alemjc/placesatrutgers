@@ -183,10 +183,6 @@ var Places = sequelize.define("place", {
   app.post("/register", function(req, res){
     console.log(req.body);
 
-    if(req.body === undefined){
-      res.send("body is undefined");
-    }
-
     Users
       .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
       password: req.body.password, birthday:req.body.birthday})
