@@ -26,6 +26,7 @@ build/Release
 # Dependency directory
 node_modules
 .idea
+DBCreds.env
 
 # Optional npm cache directory
 .npm
