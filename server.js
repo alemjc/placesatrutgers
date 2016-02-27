@@ -30,10 +30,6 @@ passport.serializeUser(function(user, done){
 });
 
 
-app.get("/login", function(req, res) {
-  res.render("login", {msg: "Your username and/or your password is incorrect!"});
-});
-
 passport.deserializeUser(function(user, done){
   done(null, {userName:user.userName});
 });
@@ -122,7 +118,6 @@ var Places = sequelize.define("place", {
      type: Sequelize.STRING,
      allowNull: false
    },
-
    userName: {
      type: Sequelize.STRING,
      allowNull: false,
@@ -130,7 +125,6 @@ var Places = sequelize.define("place", {
        len: [5, 20]
      }
    },
-
    password: {
      type: Sequelize.STRING,
      allowNull: false,
@@ -138,7 +132,6 @@ var Places = sequelize.define("place", {
        len: [5, 2000]
      }
    },
-
    birthday: {
      type: Sequelize.STRING
    }
