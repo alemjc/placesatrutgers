@@ -200,7 +200,7 @@ var Places = sequelize.define("place", {
   });
 
 
- sequelize.sync().then(function(){
+ sequelize.sync({force:true}).then(function(){
    app.listen(PORT, function() {
      console.log("LISTENING ON %s", PORT);
    });
