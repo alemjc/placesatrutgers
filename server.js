@@ -41,7 +41,7 @@ passport.deserializeUser(function(user, done){
 passport.use(new LocalStrategy({
     usernameField:'userName',
     passwordField:'password',
-    session:false
+    session:true
   },
   function(userName, password, done){
     Users
@@ -176,7 +176,7 @@ var Places = sequelize.define("place", {
       failureRedirect:"/login",
       failureFlash:true
     }
-));
+  ));
 
 
  sequelize.sync().then(function(){
