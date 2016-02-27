@@ -4,9 +4,6 @@
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
-//require("dotenv").config({path:"./DBCreds.env"});
-var url = require("url");
-var DBURL = url.format(process.env.CLEARDB_DATABASE_URL);
 var PORT = process.env.PORT || 9001;
 
 var app = express();
@@ -32,11 +29,9 @@ app.get("/register", function(req, res) {
   res.render("register");
 });
 
-var sequelize = new Sequelize(process.env.DBURL,{pool: {
-  max: 5,
-  min: 0,
-  idle: 1000
-}});
+console.log(process.env.CLEARDB_DATABASE_URL);
+
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
      address:{
