@@ -4,6 +4,11 @@
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
+var expresssession = require('express-session');
+var passport = require("passport");
+var LocalStrategy = require("passport-local");
+var flash = require('connect-flash');
+var bcrypt = require("bcryptjs");
 var PORT = process.env.PORT || 9001;
 
 var app = express();
@@ -15,18 +20,50 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
+app.use(expresssession({secret:"", resave:true, saveUninitialized:true}));
+app.use(passport.initialize());
+app.use(passport.session());
 
-//routes
-app.get("/", function(req, res) {
-  res.render("home");
+passport.serializeUser(function(user, done){
+  done(null,{userName:user.userName});
 });
 
-app.get("/login", function(req, res) {
-  res.render("login");
+passport.deserializeUser(function(user, done){
+  done(null, {userName:user.userName});
 });
 
+passport.use(new LocalStrategy({
+    usernameField:'userName',
+    passwordField:'password',
+    session:false
+  },
+  function(userName, password, done){
+    Users
+      .findOne({where: {userName:userName}})
+      .then(function(user){
+        if(user){
+          bcrypt.compare(password, user.dataValues.password, function(err, success){
 
-console.log(process.env.CLEARDB_DATABASE_URL);
+            if(success){
+              done(null,{userName:userName});
+            }
+            else{
+              done(null,false, {message: "Invalid user name or password."});
+            }
+
+          });
+        }
+        else{
+          done(null,false, {message: "Invalid user name or password."});
+        }
+
+      })
+      .catch(function(err){
+        done(err);
+      });
+  }));
+
+
 
 var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
@@ -90,6 +127,24 @@ var Places = sequelize.define("place", {
 
  Users.belongsToMany(Places,{through:Ratings});
  Places.belongsToMany(Users,{through:Ratings});
+
+
+
+  //routes
+  app.get("/", function(req, res) {
+    res.render("home");
+  });
+
+  app.get("/login", function(req, res) {
+    res.render("login");
+  });
+
+  app.post("/login", passport.authenticate('local',{
+      successRedirect:"/home",
+      failureRedirect:"/",
+      failureFlash:true
+    }
+  ));
 
 
  sequelize.sync().then(function(){
