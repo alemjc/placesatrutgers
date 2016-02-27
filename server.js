@@ -31,7 +31,7 @@ passport.serializeUser(function(user, done){
 
 
 app.get("/login", function(req, res) {
-  res.render("login" ,{ msg: "Your username and/or your password is incorrect!"}); 
+  res.render("login", {msg: "Your username and/or your password is incorrect!"});
 });
 
 passport.deserializeUser(function(user, done){
