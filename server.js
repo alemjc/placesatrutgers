@@ -23,6 +23,7 @@ app.use("/static", express.static("public"));
 app.use(expresssession({secret:"", resave:true, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 passport.serializeUser(function(user, done){
   done(null,{userName:user.userName});
@@ -136,6 +137,9 @@ var Places = sequelize.define("place", {
   });
 
   app.get("/login", function(req, res) {
+    var errors = req.flash();
+
+    console.log(errors);
     res.render("login");
   });
 
