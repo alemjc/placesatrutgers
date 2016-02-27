@@ -70,9 +70,9 @@ passport.use(new LocalStrategy({
   }));
 
 
-
 if(process.env.NODE_ENV === 'production') {
   // FOR HEROKU DEPLOY
+
 } 
 else {
   // FOR TESTING LOCALLY
@@ -166,6 +166,7 @@ var Places = sequelize.define("place", {
   app.get("/login", function(req, res) {
     var errors = req.flash();
 
+    console.log("***************in get /login, errors are as follows: ************");
     console.log(errors);
     res.render("login");
   });
