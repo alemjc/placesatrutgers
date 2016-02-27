@@ -171,10 +171,10 @@ var Places = sequelize.define("place", {
 
   app.post("/login", passport.authenticate('local',{
       successRedirect:"/home",
-      failureRedirect:"/",
+      failureRedirect:"/login",
       failureFlash:true
     }
-  ));
+));
 
 
  sequelize.sync().then(function(){
