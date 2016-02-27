@@ -28,11 +28,7 @@ app.get("/login", function(req, res) {
 
 console.log(process.env.CLEARDB_DATABASE_URL);
 
-var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL,{pool: {
-  max: 5,
-  min: 0,
-  idle: 1000
-}});
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
      address:{
