@@ -195,6 +195,8 @@ var Places = sequelize.define("place", {
         res.redirect("/login");
       })
       .catch(function(err){
+        console.log("error is: ");
+        console.log(err);
         if(err){
           res.redirect("/register");
         }
