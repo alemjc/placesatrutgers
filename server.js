@@ -100,11 +100,20 @@ var Places = sequelize.define("place", {
    type:Sequelize.STRING,
    allowNull:false
   },
-
   pictures:{
    type:Sequelize.STRING
   },
-
+  name: {
+  type:Sequelize.STRING,
+   allowNull:false
+  },
+  address:{
+   type:Sequelize.STRING,
+   allowNull:false
+  },
+  pictures:{
+   type:Sequelize.STRING
+  },
   hours:{
    type:Sequelize.STRING
   },
@@ -151,6 +160,12 @@ var Users = sequelize.define("user",{
 );
 
 var Ratings = sequelize.define("rating",{
+  stars: {
+    type:Sequelize.INTEGER,
+    validate: {
+      max: 5
+    }
+  },
   comment:{
     type:Sequelize.STRING
   }
@@ -191,7 +206,7 @@ app.get("/login", function(req, res) {
 });
 
 app.post("/login", passport.authenticate('local',{
-    successRedirect:"/home",
+    successRedirect:"/",
     failureRedirect:"/login",
     failureFlash:true
   }
@@ -215,6 +230,22 @@ app.post("/register", function(req, res){
     });
 });
 
+app.post("/register", function(req, res){
+  console.log(req.body);
+  Users
+    .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
+    password: req.body.password, birthday:req.body.birthday})
+    .then(function(){
+      res.redirect("/login");
+    })
+    .catch(function(err){
+      console.log("error is: ");
+      console.log(err);
+      if(err){
+        res.redirect("/register");
+      }
+    });
+});
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {
