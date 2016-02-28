@@ -94,6 +94,10 @@ app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialize
 }));
 
 var Places = sequelize.define("place", {
+     name: {
+      type:Sequelize.STRING,
+       allowNull:false
+     },
      address:{
        type:Sequelize.STRING,
        allowNull:false
