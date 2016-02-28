@@ -159,9 +159,13 @@ var Places = sequelize.define("place", {
  Places.belongsToMany(Users,{through:Ratings});
 
   //routes
-  app.get("/", function(req, res) {
-    res.render("home");
+  app.get("/", function (req, res) {
+  Places.findAll().then(function(place) {
+    res.render('home', {
+      place: place
+    })
   });
+});
 
   app.get("/register", function(req, res) {
     res.render("register");

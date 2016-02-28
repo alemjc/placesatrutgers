@@ -16,3 +16,8 @@ nav {
 .leftLinks{
   margin-left: 200px
 }
+
+.thumbs{
+  height: auto;
+  width: 200px;
+}
