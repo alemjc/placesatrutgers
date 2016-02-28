@@ -5,6 +5,13 @@ nav {
     );
 }
 
+body{
+  background-color: #470000
+}
+
+h1, h5, li{
+  color: white;
+}
 .brand-logo{
   margin-left:100px;
 }
@@ -20,4 +27,13 @@ nav {
 .thumbs{
   height: auto;
   width: 200px;
+}
+
+.parallax-container{
+  height: 350px;
+}
+
+.header{
+  font-size: 200px;
+  color: grey;
 }
