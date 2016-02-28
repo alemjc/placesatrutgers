@@ -1,1 +1,38 @@
 <!-- This is the main handlebars page -->
+<div class="row">
+  <div class="col md 12">
+    <h1>Places</h1>
+  </div>
+</div>
+<div id="index-banner" class="parallax-container">
+  <div class="section no-pad-bot">
+    <div class="container">
+      <br>
+      <h1 class="header center text-lighten-2">ALL</h1>
+      <div class="row">  
+        <div class="parallax">
+          <img src="../static/images/all.png" alt="Unsplashed background img 1">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="container">
+    <div class="section">
+    {{#each place}}
+    <div class="row">
+      <div class="col md 2">
+        <img class="thumbs" src="{{ pictures }}">
+      </div>
+        <div class="col md 10">
+          <h5>{{ name }}</h5>
+          <ul>
+            <li>{{ address }}</li>
+            <li>{{ category }}</li>
+          </ul>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+    
