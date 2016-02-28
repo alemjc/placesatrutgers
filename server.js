@@ -156,7 +156,7 @@ var Ratings = sequelize.define("rating",{
 Users.belongsToMany(Places,{through:Ratings});
 Places.belongsToMany(Users,{through:Ratings});
 
-  //routes
+//routes
 app.get("/", function (req, res) {
   Places.findAll().then(function(place) {
     res.render('home', {
@@ -164,6 +164,17 @@ app.get("/", function (req, res) {
     })
   });
 });
+
+app.get("/food", function (req, res) {
+  Places.findAll({where: 
+    {category: "food"}
+  }).then(function(place) {
+    res.render('food', {
+      place: place
+    })
+  });
+});
+//end routes
 
 app.get("/register", function(req, res) {
   res.render("register");
@@ -186,9 +197,9 @@ app.post("/login", passport.authenticate('local',{
 
 
 sequelize.sync().then(function(){
- app.listen(PORT, function() {
-   console.log("LISTENING ON %s", PORT);
- });
+  app.listen(PORT, function() {
+  console.log("LISTENING ON %s", PORT);
+});
 
 }).catch(function(err){
   console.log("could not sync to db because of following error");
