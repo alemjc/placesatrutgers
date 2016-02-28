@@ -192,6 +192,16 @@ app.get("/food", function (req, res) {
     })
   });
 });
+
+app.get("/entertainment", function (req, res) {
+  Places.findAll({where: 
+    {category: "entertainment"}
+  }).then(function(place) {
+    res.render('entertainment', {
+      place: place
+    })
+  });
+});
 //end routes
 
 app.get("/register", function(req, res) {
