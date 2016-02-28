@@ -9,6 +9,7 @@ var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
+var bodyparser = require("body-parser");
 var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
@@ -21,6 +22,7 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
+app.use(bodyparser.urlencoded({extended:false}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -30,10 +32,6 @@ passport.serializeUser(function(user, done){
 });
 
 
-app.get("/login", function(req, res) {
-  res.render("login", {msg: "Your username and/or your password is incorrect!"});
-});
-
 passport.deserializeUser(function(user, done){
   done(null, {userName:user.userName});
 });
@@ -41,7 +39,7 @@ passport.deserializeUser(function(user, done){
 passport.use(new LocalStrategy({
     usernameField:'userName',
     passwordField:'password',
-    session:false
+    session:true
   },
   function(userName, password, done){
     Users
@@ -125,27 +123,32 @@ var Users = sequelize.define("user",{
    type:Sequelize.STRING,
    allowNull:false
   },
-
   userName:{
    type:Sequelize.STRING,
    allowNull:false,
    validate:{
      len:[5,20]
-   }
+    }
   },
-
-  password:{
-   type:Sequelize.STRING,
-   allowNull:false,
-   validate:{
-     len:[5,2000]
+ password: {
+   type: Sequelize.STRING,
+   allowNull: false,
+   validate: {
+     len: [5, 2000]
    }
-  },
-
-  birthday:{
-   type:Sequelize.STRING
+ },
+ birthday: {
+ type: Sequelize.STRING
   }
-});
+},
+  {
+  hooks:{
+    beforeCreate: function(input){
+      input.password = bcrypt.hashSync(input.password,10);
+      }
+    }
+  }
+);
 
 var Ratings = sequelize.define("rating",{
   comment:{
@@ -182,7 +185,6 @@ app.get("/register", function(req, res) {
 
 app.get("/login", function(req, res) {
   var errors = req.flash();
-
   console.log("***************in get /login, errors are as follows: ************");
   console.log(errors);
   res.render("login");
@@ -195,14 +197,30 @@ app.post("/login", passport.authenticate('local',{
   }
 ));
 
+app.post("/register", function(req, res){
+  console.log(req.body);
+
+  Users
+    .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
+    password: req.body.password, birthday:req.body.birthday})
+    .then(function(){
+      res.redirect("/login");
+    })
+    .catch(function(err){
+      console.log("error is: ");
+      console.log(err);
+      if(err){
+        res.redirect("/register");
+      }
+    });
+});
+
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {
-  console.log("LISTENING ON %s", PORT);
-});
-
+   console.log("LISTENING ON %s", PORT);
+  });
 }).catch(function(err){
   console.log("could not sync to db because of following error");
   console.log(err);
-
 });
