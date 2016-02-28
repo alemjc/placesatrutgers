@@ -94,72 +94,70 @@ app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialize
 }));
 
 var Places = sequelize.define("place", {
-     name: {
-      type:Sequelize.STRING,
-       allowNull:false
-     },
-     address:{
-       type:Sequelize.STRING,
-       allowNull:false
-     },
+  name: {
+  type:Sequelize.STRING,
+   allowNull:false
+  },
+  address:{
+   type:Sequelize.STRING,
+   allowNull:false
+  },
 
-     pictures:{
-       type:Sequelize.STRING
-     },
+  pictures:{
+   type:Sequelize.STRING
+  },
 
-     hours:{
-       type:Sequelize.STRING
-     },
-     category:{
-       type:Sequelize.STRING,
-       allowNull:false
-     }
+  hours:{
+   type:Sequelize.STRING
+  },
+  category:{
+   type:Sequelize.STRING,
+   allowNull:false
+  }
+});
 
- });
+var Users = sequelize.define("user",{
+  firstName:{
+   type:Sequelize.STRING,
+   allowNull:false
+  },
+  lastName:{
+   type:Sequelize.STRING,
+   allowNull:false
+  },
 
- var Users = sequelize.define("user",{
-   firstName:{
-     type:Sequelize.STRING,
-     allowNull:false
-   },
-   lastName:{
-     type:Sequelize.STRING,
-     allowNull:false
-   },
-
-   userName:{
-     type:Sequelize.STRING,
-     allowNull:false,
-     validate:{
-       len:[5,20]
-     }
-   },
-
-   password:{
-     type:Sequelize.STRING,
-     allowNull:false,
-     validate:{
-       len:[5,2000]
-     }
-   },
-
-   birthday:{
-     type:Sequelize.STRING
+  userName:{
+   type:Sequelize.STRING,
+   allowNull:false,
+   validate:{
+     len:[5,20]
    }
- });
+  },
 
- var Ratings = sequelize.define("rating",{
-   comment:{
-     type:Sequelize.STRING
+  password:{
+   type:Sequelize.STRING,
+   allowNull:false,
+   validate:{
+     len:[5,2000]
    }
+  },
 
- });
+  birthday:{
+   type:Sequelize.STRING
+  }
+});
 
- Users.belongsToMany(Places,{through:Ratings});
- Places.belongsToMany(Users,{through:Ratings});
+var Ratings = sequelize.define("rating",{
+  comment:{
+    type:Sequelize.STRING
+  }
+});
+
+Users.belongsToMany(Places,{through:Ratings});
+Places.belongsToMany(Users,{through:Ratings});
 
   //routes
-  app.get("/", function (req, res) {
+app.get("/", function (req, res) {
   Places.findAll().then(function(place) {
     res.render('home', {
       place: place
@@ -167,33 +165,33 @@ var Places = sequelize.define("place", {
   });
 });
 
-  app.get("/register", function(req, res) {
-    res.render("register");
-  });
+app.get("/register", function(req, res) {
+  res.render("register");
+});
 
-  app.get("/login", function(req, res) {
-    var errors = req.flash();
+app.get("/login", function(req, res) {
+  var errors = req.flash();
 
-    console.log("***************in get /login, errors are as follows: ************");
-    console.log(errors);
-    res.render("login");
-  });
+  console.log("***************in get /login, errors are as follows: ************");
+  console.log(errors);
+  res.render("login");
+});
 
-  app.post("/login", passport.authenticate('local',{
-      successRedirect:"/home",
-      failureRedirect:"/login",
-      failureFlash:true
-    }
+app.post("/login", passport.authenticate('local',{
+    successRedirect:"/home",
+    failureRedirect:"/login",
+    failureFlash:true
+  }
 ));
 
 
- sequelize.sync().then(function(){
-   app.listen(PORT, function() {
-     console.log("LISTENING ON %s", PORT);
-   });
-
- }).catch(function(err){
-    console.log("could not sync to db because of following error");
-    console.log(err);
-
+sequelize.sync().then(function(){
+ app.listen(PORT, function() {
+   console.log("LISTENING ON %s", PORT);
  });
+
+}).catch(function(err){
+  console.log("could not sync to db because of following error");
+  console.log(err);
+
+});
