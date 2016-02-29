@@ -224,9 +224,21 @@ app.get("/:category/:id", function (req, res){
     // console.log(ratings[0].dataValues.placeId);
     console.log(ratings[0].dataValues.userId);
     Places.findAll({
-      where: {id: id}
-    }).then(function(place){
+      where: {id: id},
+      include: [{
+        model: Users
+        }]
+      }).then(function(place){
+      console.log("____________**__");
+      console.log(place);
+      res.render("placepage", {
+        place: place,
+        ratings: ratings
+      })
       console.log(ratings);
+      console.log("************");
+      console.log(place[0].dataValues.name);
+      console.log(place[0].dataValues.address);
     })
     // console.log(places[0].dataValues.userName);
     // console.log(places[0].dataValues.places[0].name);

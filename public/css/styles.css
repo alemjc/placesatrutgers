@@ -9,9 +9,10 @@ body{
   background-color: #470000
 }
 
-h1, h5, li, h3{
-  color: white;
+h1, h5, li, h3, p{
+  color: lightgrey;
 }
+
 .brand-logo{
   margin-left:100px;
 }
@@ -41,4 +42,8 @@ h1, h5, li, h3{
 #entertainment{
   margin-top: 65px;
   font-size: 130px;
+}
+
+.comment{
+  margin-left:5px;
 }
