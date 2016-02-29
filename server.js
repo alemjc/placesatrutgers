@@ -202,6 +202,16 @@ app.get("/entertainment", function (req, res) {
     })
   });
 });
+
+app.get("/shopping", function (req, res) {
+  Places.findAll({where: 
+    {category: "shopping"}
+  }).then(function(place) {
+    res.render('shopping', {
+      place: place
+    })
+  });
+});
 //end routes
 
 app.get("/register", function(req, res) {
