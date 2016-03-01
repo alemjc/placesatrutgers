@@ -250,22 +250,7 @@ app.post("/register", function(req, res){
     });
 });
 
-app.post("/register", function(req, res){
-  console.log(req.body);
-  Users
-    .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
-    password: req.body.password, birthday:req.body.birthday})
-    .then(function(){
-      res.redirect("/login");
-    })
-    .catch(function(err){
-      console.log("error is: ");
-      console.log(err);
-      if(err){
-        res.redirect("/register");
-      }
-    });
-});
+
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {
