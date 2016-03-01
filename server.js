@@ -220,7 +220,7 @@ app.get("/:category/:id", function (req, res){
   Ratings.findAll({
     where: {placeId: id}
     }).then(function(ratings){
-    var ratings= ratings
+    var ratings= ratings;
     // console.log(ratings[0].dataValues.stars);
     // console.log(ratings[0].dataValues.comment);
     // // console.log(ratings[0].dataValues.placeId);
@@ -257,7 +257,8 @@ app.get("/register", function(req, res) {
 
 app.get("/login", function(req, res) {
   console.log("***********************");
-
+  console.log("flash message is: ");
+  console.log(req.flash());
   res.render("login",{msg:req.flash("message")});
 });
 
