@@ -23,8 +23,6 @@ app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
 app.use(bodyparser.urlencoded({extended:false}));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(flash());
 
 passport.serializeUser(function(user, done){
@@ -91,6 +89,9 @@ app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialize
     db: sequelize
   })
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 var Places = sequelize.define("place", {
   name: {
@@ -236,18 +237,18 @@ app.get("/:category/:id", function (req, res){
       res.render("placepage", {
         place: place,
         ratings: ratings
-      })
+      });
       // console.log(ratings);
       // console.log("************");
       // console.log(place[0].dataValues.name);
       // console.log(place[0].dataValues.address);
-    })
+    });
     // console.log(places[0].dataValues.userName);
     // console.log(places[0].dataValues.places[0].name);
     // // Ratings.findAll({
     //   where: 
     })
-  })
+  });
   
 //end routes
 
