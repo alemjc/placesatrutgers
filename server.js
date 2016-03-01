@@ -217,6 +217,41 @@ app.get("/shopping", function (req, res) {
     })
   });
 });
+
+app.get("/:category/:id", function (req, res){
+  var id = req.params.id;
+  Ratings.findAll({
+    where: {placeId: id}
+    }).then(function(ratings){
+    var ratings= ratings
+    // console.log(ratings[0].dataValues.stars);
+    // console.log(ratings[0].dataValues.comment);
+    // // console.log(ratings[0].dataValues.placeId);
+    // console.log(ratings[0].dataValues.userId);
+    Places.findAll({
+      where: {id: id},
+      include: [{
+        model: Users
+        }]
+      }).then(function(place){
+      // console.log("____________**__");
+      // console.log(place);
+      res.render("placepage", {
+        place: place,
+        ratings: ratings
+      })
+      // console.log(ratings);
+      // console.log("************");
+      // console.log(place[0].dataValues.name);
+      // console.log(place[0].dataValues.address);
+    })
+    // console.log(places[0].dataValues.userName);
+    // console.log(places[0].dataValues.places[0].name);
+    // // Ratings.findAll({
+    //   where: 
+    })
+  })
+  
 //end routes
 
 app.get("/register", function(req, res) {

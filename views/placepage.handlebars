@@ -1,0 +1,30 @@
+{{#each place}}
+<div class="placepage">
+  <div class="row">
+    <div class="col md 2">
+      <img class="thumbs" src="{{ pictures }}">
+    </div>
+    <div class="col md 10">
+      <h3>{{ name }}</h3>
+      <p>{{ address }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col md 12 offset-m2">
+      <h5>Reviews</h5>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col md 2 offset-m2">
+      {{#each users}}
+      <p>{{ userName }}</p>
+      {{/each}}
+      {{/each}}
+    </div>
+    <div class="col md 8">
+      {{#each ratings}}
+      <p><span class="stars">{{ stars }}</span> <span class="comment">{{ comment }}</span></p>
+      {{/each}}
+    </div>
+  </div>
+</div>
