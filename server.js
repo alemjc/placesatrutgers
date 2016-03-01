@@ -112,7 +112,8 @@ var Places = sequelize.define("place", {
    allowNull:false
   },
   pictures:{
-   type:Sequelize.STRING
+   type:Sequelize.STRING,
+   defaultValue: "http://www.clipartbest.com/cliparts/dc8/578/dc8578Kgi.jpeg"
   },
   hours:{
    type:Sequelize.STRING
