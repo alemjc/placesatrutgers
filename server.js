@@ -245,6 +245,7 @@ app.post("/register", function(req, res){
       console.log("error is: ");
       console.log(err);
       if(err){
+        console.log(err);
         res.redirect("/register");
       }
     });
