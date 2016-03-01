@@ -10,6 +10,7 @@ var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
 var bodyparser = require("body-parser");
+var cookieparser = require("cookie-parser");
 var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
@@ -23,6 +24,7 @@ app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
 app.use(bodyparser.urlencoded({extended:false}));
+app.use(cookieparser(process.env.SECRET));
 app.use(flash());
 
 passport.serializeUser(function(user, done){
