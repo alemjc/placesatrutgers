@@ -39,9 +39,10 @@ passport.deserializeUser(function(user, done){
 passport.use(new LocalStrategy({
     usernameField:'userName',
     passwordField:'password',
-    session:true
+    session:true,
+    passReqToCallback: true
   },
-  function(userName, password, done){
+  function(req, userName, password, done){
     Users
       .findOne({where: {userName:userName}})
       .then(function(user){
@@ -49,15 +50,18 @@ passport.use(new LocalStrategy({
           bcrypt.compare(password, user.dataValues.password, function(err, success){
 
             if(success){
+              req.flash('msg',undefined);
               done(null,{userName:userName});
             }
             else{
+              req.flash('msg',"Invalid user name or password.");
               done(null,false, {message: "Invalid user name or password."});
             }
 
           });
         }
         else{
+          req.flash('msg',"Invalid user name or password.");
           done(null,false, {message: "Invalid user name or password."});
         }
 
@@ -215,14 +219,13 @@ app.get("/shopping", function (req, res) {
 //end routes
 
 app.get("/register", function(req, res) {
-  res.render("register");
+  res.render("register", req.query);
 });
 
 app.get("/login", function(req, res) {
-  var errors = req.flash();
-  console.log("***************in get /login, errors are as follows: ************");
-  console.log(errors);
-  res.render("login");
+  console.log("***********************");
+
+  res.render("login",{msg:req.flash("msg")});
 });
 
 app.post("/login", passport.authenticate('local',{
@@ -235,6 +238,16 @@ app.post("/login", passport.authenticate('local',{
 app.post("/register", function(req, res){
   console.log(req.body);
 
+  if(req.body.userName.length < 5 || req.body.password.length < 5){
+    res.redirect("/register?msg=User name password must be longer than 5 characters.");
+    return;
+  }
+
+  if(req.body.first_name.length === 0 || req.body.last_name.length === 0 || req.body.birthday.length === 0){
+    res.redirect("/register?msg=Please fill out all fields.");
+    return;
+  }
+
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
     password: req.body.password, birthday:req.body.birthday})
@@ -246,7 +259,7 @@ app.post("/register", function(req, res){
       console.log(err);
       if(err){
         console.log(err);
-        res.redirect("/register");
+        res.redirect("/register?msg=Please fill out all fields.");
       }
     });
 });

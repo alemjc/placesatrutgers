@@ -38,6 +38,11 @@ h1, h5, li, h3{
   color: darkgrey;
 }
 
+.errormsg{
+  color: yellow;
+  font-weight: bold;
+}
+
 #entertainment{
   margin-top: 65px;
   font-size: 130px;
