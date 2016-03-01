@@ -262,9 +262,14 @@ app.get("/login", function(req, res) {
   console.log("***********************");
   console.log("flash message is: ");
   var error = req.flash().error;
+  var msg = undefined;
   console.log(error);
   console.log(req.flash());
-  res.render("login",{msg:req.flash("message")});
+  if(error !== undefined){
+    msg = "Invalid user name or password.";
+  }
+
+  res.render("login",{msg:msg});
 });
 
 app.post("/login", passport.authenticate('local',{
