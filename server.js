@@ -50,18 +50,15 @@ passport.use(new LocalStrategy({
           bcrypt.compare(password, user.dataValues.password, function(err, success){
 
             if(success){
-              req.flash('msg',undefined);
               done(null,{userName:userName});
             }
             else{
-              req.flash('msg',"Invalid user name or password.");
               done(null,false, {message: "Invalid user name or password."});
             }
 
           });
         }
         else{
-          req.flash('msg',"Invalid user name or password.");
           done(null,false, {message: "Invalid user name or password."});
         }
 
@@ -261,7 +258,7 @@ app.get("/register", function(req, res) {
 app.get("/login", function(req, res) {
   console.log("***********************");
 
-  res.render("login",{msg:req.flash("msg")});
+  res.render("login",{msg:req.flash("message")});
 });
 
 app.post("/login", passport.authenticate('local',{
