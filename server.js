@@ -261,6 +261,8 @@ app.get("/register", function(req, res) {
 app.get("/login", function(req, res) {
   console.log("***********************");
   console.log("flash message is: ");
+  var error = req.flash().error;
+  console.log(error);
   console.log(req.flash());
   res.render("login",{msg:req.flash("message")});
 });
