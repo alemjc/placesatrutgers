@@ -1,13 +1,11 @@
  $(document).ready(function(){
   $(".parallax").parallax();
-});
-
-$(document).ready(function(){
-    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
   $('.modal-trigger').leanModal();
+  $('select').material_select();
+  $("#clearBtn").on("click", function(){
+  	//get the input fields by id and clear it
+  });
 });
 
-$(document).ready(function() {
-  $('select').material_select();
-});
-      
+
+
