@@ -5,6 +5,13 @@ nav {
     );
 }
 
+.addthings {
+  background-image:
+    linear-gradient(
+      red, darkred, #282828
+    );
+}
+
 body{
   background-color: darkred;
 }
