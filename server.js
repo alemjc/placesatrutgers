@@ -10,7 +10,6 @@ var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
 var bodyparser = require("body-parser");
-var cookieparser = require("cookie-parser");
 var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
@@ -24,7 +23,7 @@ app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
 app.use(bodyparser.urlencoded({extended:false}));
-app.use(cookieparser(process.env.SECRET));
+
 app.use(flash());
 
 passport.serializeUser(function(user, done){
@@ -51,6 +50,7 @@ passport.use(new LocalStrategy({
 
             if(success){
               done(null,{userName:userName});
+              console.log("logged in")
             }
             else{
               done(null,false, {message: "Invalid user name or password."});
@@ -87,6 +87,7 @@ var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
 });
 
 app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
+  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) },
   store: new SequelizeStore({
     db: sequelize
   })
@@ -181,41 +182,72 @@ Places.belongsToMany(Users,{through:Ratings});
 
 //routes
 app.get("/", function (req, res) {
-  Places.findAll().then(function(place) {
-    res.render('home', {
-      place: place
-    })
-  });
+  console.log("##############");
+  console.log(req.isAuthenticated());
+  console.log("##############");
+    Places.findAll().then(function(place) {
+      if(req.isAuthenticated()){
+        res.render('home', {
+          layout: "loggedin",
+          place: place
+        })
+      }else{
+        res.render('home', {
+        place: place
+      })
+    }
+  })
 });
 
 app.get("/food", function (req, res) {
-  Places.findAll({where: 
-    {category: "food"}
+  Places.findAll({
+    where: {category: "food"}
   }).then(function(place) {
-    res.render('food', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('food', {
+        layout: "loggedin",
+        place: place
+      })
+    }else{
+      res.render('food', {
+       place: place
+      })
+    }
+  })
 });
 
 app.get("/entertainment", function (req, res) {
-  Places.findAll({where: 
-    {category: "entertainment"}
+  Places.findAll({
+    where: {category: "entertainment"}
   }).then(function(place) {
-    res.render('entertainment', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('entertainment', {
+        layout: "loggedin",
+        place: place
+      })
+    }else{
+      res.render('entertainment', {
+        place: place
+      })
+    }
+  })
 });
 
 app.get("/shopping", function (req, res) {
-  Places.findAll({where: 
-    {category: "shopping"}
+  Places.findAll({
+    where: {category: "shopping"}
   }).then(function(place) {
-    res.render('shopping', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('shopping', {
+        layout:"loggedin",
+        place: place
+      })
+    }else{
+      res.render('shopping', {
+        place: place
+      })
+    }
+  })
 });
 
 app.get("/:category/:id", function (req, res){
@@ -223,7 +255,7 @@ app.get("/:category/:id", function (req, res){
   Ratings.findAll({
     where: {placeId: id}
     }).then(function(ratings){
-    var ratings= ratings;
+    var ratings= ratings
     // console.log(ratings[0].dataValues.stars);
     // console.log(ratings[0].dataValues.comment);
     // // console.log(ratings[0].dataValues.placeId);
@@ -236,21 +268,29 @@ app.get("/:category/:id", function (req, res){
       }).then(function(place){
       // console.log("____________**__");
       // console.log(place);
-      res.render("placepage", {
-        place: place,
-        ratings: ratings
-      });
+      if(req.isAuthenticated()){
+        res.render("placepage", {
+          layout:"loggedin",
+          place: place,
+          ratings: ratings
+        })
+      }else{
+        res.render("placepage", {
+          place: place,
+          ratings: ratings
+        })
+      }
       // console.log(ratings);
       // console.log("************");
       // console.log(place[0].dataValues.name);
       // console.log(place[0].dataValues.address);
-    });
+    })
     // console.log(places[0].dataValues.userName);
     // console.log(places[0].dataValues.places[0].name);
     // // Ratings.findAll({
     //   where: 
     })
-  });
+  })
   
 //end routes
 
@@ -260,16 +300,8 @@ app.get("/register", function(req, res) {
 
 app.get("/login", function(req, res) {
   console.log("***********************");
-  console.log("flash message is: ");
-  var error = req.flash().error;
-  var msg = undefined;
-  console.log(error);
-  console.log(req.flash());
-  if(error !== undefined){
-    msg = "Invalid user name or password.";
-  }
 
-  res.render("login",{msg:msg});
+  res.render("login",{msg:req.flash("message")});
 });
 
 app.post("/login", passport.authenticate('local',{
