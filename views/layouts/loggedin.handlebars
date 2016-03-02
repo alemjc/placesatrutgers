@@ -20,6 +20,9 @@
         <li><a href="/"><i class="fa fa-globe"></i> All</a></li>
       </ul>
       <ul id="nav-mobile" class="rightLinks right hide-on-med-and-down">
+      {{#with userinfo}}
+        <li>Welcome {{userName}}!</li>
+      {{/with}}
         <li><a href="/logout">Log Out</a></li>
       </ul>
     </div>

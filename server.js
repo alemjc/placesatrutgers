@@ -187,9 +187,13 @@ app.get("/", function (req, res) {
   console.log("##############");
     Places.findAll().then(function(place) {
       if(req.isAuthenticated()){
+        console.log("##############");
+        console.log(req.user);
+        console.log("##############");
         res.render('home', {
           layout: "loggedin",
-          place: place
+          place: place,
+          userinfo: req.user
         })
       }else{
         res.render('home', {
