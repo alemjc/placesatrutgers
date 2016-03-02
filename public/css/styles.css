@@ -13,12 +13,22 @@ nav {
 }
 
 body{
-  background-color: #470000
+  background-color: darkred;
 }
 
-h1, h5, li, h3{
-  color: white;
+a > h5{
+  color: #0645AD !important;
 }
+
+h1, h5, li, h3, p{
+  color: lightgrey;
+}
+
+.placepage{
+  margin-top:100px;
+  margin-left:100px;
+}
+
 .brand-logo{
   margin-left:100px;
 }
@@ -45,7 +55,16 @@ h1, h5, li, h3{
   color: darkgrey;
 }
 
+.errormsg{
+  color: yellow;
+  font-weight: bold;
+}
+
 #entertainment{
   margin-top: 65px;
   font-size: 130px;
+}
+
+.comment{
+  margin-left:5px;
 }

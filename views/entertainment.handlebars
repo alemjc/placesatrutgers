@@ -17,10 +17,10 @@
     {{#each place}}
     <div class="row">
       <div class="col md 2">
-        <img class="thumbs" src="{{ pictures }}">
+        <a href="{{category}}/{{id}}"><img class="thumbs" src="{{ pictures }}"></a>
       </div>
         <div class="col md 10">
-          <h5>{{ name }}</h5>
+          <a href="{{category}}/{{id}}"><h5>{{ name }}</h5></a>
           <ul>
             <li>{{ address }}</li>
           </ul>

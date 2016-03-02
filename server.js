@@ -23,8 +23,7 @@ app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
 app.use(bodyparser.urlencoded({extended:false}));
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(flash());
 
 passport.serializeUser(function(user, done){
@@ -39,9 +38,10 @@ passport.deserializeUser(function(user, done){
 passport.use(new LocalStrategy({
     usernameField:'userName',
     passwordField:'password',
-    session:true
+    session:true,
+    passReqToCallback: true
   },
-  function(userName, password, done){
+  function(req, userName, password, done){
     Users
       .findOne({where: {userName:userName}})
       .then(function(user){
@@ -50,6 +50,7 @@ passport.use(new LocalStrategy({
 
             if(success){
               done(null,{userName:userName});
+              console.log("logged in")
             }
             else{
               done(null,false, {message: "Invalid user name or password."});
@@ -86,10 +87,14 @@ var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
 });
 
 app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
+  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) },
   store: new SequelizeStore({
     db: sequelize
   })
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 var Places = sequelize.define("place", {
   name: {
@@ -112,7 +117,8 @@ var Places = sequelize.define("place", {
    allowNull:false
   },
   pictures:{
-   type:Sequelize.STRING
+   type:Sequelize.STRING,
+   defaultValue: "http://www.clipartbest.com/cliparts/dc8/578/dc8578Kgi.jpeg"
   },
   hours:{
    type:Sequelize.STRING
@@ -176,53 +182,116 @@ Places.belongsToMany(Users,{through:Ratings});
 
 //routes
 app.get("/", function (req, res) {
-  Places.findAll().then(function(place) {
-    res.render('home', {
-      place: place
-    })
-  });
+  console.log("##############");
+  console.log(req.isAuthenticated());
+  console.log("##############");
+    Places.findAll().then(function(place) {
+      if(req.isAuthenticated()){
+        console.log("##############");
+        console.log(req.user);
+        console.log("##############");
+        res.render('home', {
+          layout: "loggedin",
+          place: place,
+          userinfo: req.user
+        })
+      }else{
+        res.render('home', {
+        place: place
+      })
+    }
+  })
 });
 
 app.get("/food", function (req, res) {
-  Places.findAll({where: 
-    {category: "food"}
+  Places.findAll({
+    where: {category: "food"}
   }).then(function(place) {
-    res.render('food', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('food', {
+        layout: "loggedin",
+        place: place
+      })
+    }else{
+      res.render('food', {
+       place: place
+      })
+    }
+  })
 });
 
 app.get("/entertainment", function (req, res) {
-  Places.findAll({where: 
-    {category: "entertainment"}
+  Places.findAll({
+    where: {category: "entertainment"}
   }).then(function(place) {
-    res.render('entertainment', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('entertainment', {
+        layout: "loggedin",
+        place: place
+      })
+    }else{
+      res.render('entertainment', {
+        place: place
+      })
+    }
+  })
 });
 
 app.get("/shopping", function (req, res) {
-  Places.findAll({where: 
-    {category: "shopping"}
+  Places.findAll({
+    where: {category: "shopping"}
   }).then(function(place) {
-    res.render('shopping', {
-      place: place
-    })
-  });
+    if(req.isAuthenticated()){
+      res.render('shopping', {
+        layout:"loggedin",
+        place: place
+      })
+    }else{
+      res.render('shopping', {
+        place: place
+      })
+    }
+  })
 });
+
+app.get("/:category/:id", function (req, res){
+  var id = req.params.id;
+  Ratings.findAll({
+    where: {placeId: id}
+    }).then(function(ratings){
+      var ratings= ratings
+      Places.findAll({
+        where: {id: id},
+        include: [{
+          model: Users
+          }]
+        }).then(function(place){
+        if(req.isAuthenticated()){
+          res.render("placepage", {
+            layout:"loggedin",
+            place: place,
+            ratings: ratings
+          })
+        }else{
+          res.render("placepage", {
+            place: place,
+            ratings: ratings
+          })
+        }
+      })
+    })
+  })
+  
 //end routes
 
 app.get("/register", function(req, res) {
-  res.render("register");
+  res.render("register", req.query);
 });
 
 app.get("/login", function(req, res) {
-  var errors = req.flash();
-  console.log("***************in get /login, errors are as follows: ************");
-  console.log(errors);
-  res.render("login");
+  console.log("***********************");
+
+  res.render("login",{msg:req.flash("message")});
 });
 
 app.post("/login", passport.authenticate('local',{
@@ -235,6 +304,16 @@ app.post("/login", passport.authenticate('local',{
 app.post("/register", function(req, res){
   console.log(req.body);
 
+  if(req.body.userName.length < 5 || req.body.password.length < 5){
+    res.redirect("/register?msg=User name password must be longer than 5 characters.");
+    return;
+  }
+
+  if(req.body.first_name.length === 0 || req.body.last_name.length === 0 || req.body.birthday.length === 0){
+    res.redirect("/register?msg=Please fill out all fields.");
+    return;
+  }
+
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
     password: req.body.password, birthday:req.body.birthday})
@@ -245,7 +324,8 @@ app.post("/register", function(req, res){
       console.log("error is: ");
       console.log(err);
       if(err){
-        res.redirect("/register");
+        console.log(err);
+        res.redirect("/register?msg=Please fill out all fields.");
       }
     });
 });
