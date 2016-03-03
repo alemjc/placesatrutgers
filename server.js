@@ -84,8 +84,10 @@ else {
   require("dotenv").config({path:"./DBCreds.env"});
 }
 
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
+
 app.use(expresssession({secret:'process.env.SECRET', resave:true, saveUninitialized:true,
-  cookie : { secure : false, maxAge : (2 * 60 * 1000) }
+  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) }
   //store: new SequelizeStore({
   //  db: sequelize
   //})
@@ -94,8 +96,6 @@ app.use(expresssession({secret:'process.env.SECRET', resave:true, saveUninitiali
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
 var Places = sequelize.define("place", {
   name: {
