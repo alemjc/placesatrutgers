@@ -211,7 +211,8 @@ app.get("/food", function (req, res) {
     if(req.isAuthenticated()){
       res.render('food', {
         layout: "loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('food', {
@@ -228,7 +229,8 @@ app.get("/entertainment", function (req, res) {
     if(req.isAuthenticated()){
       res.render('entertainment', {
         layout: "loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('entertainment', {
@@ -245,7 +247,8 @@ app.get("/shopping", function (req, res) {
     if(req.isAuthenticated()){
       res.render('shopping', {
         layout:"loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('shopping', {
@@ -271,7 +274,8 @@ app.get("/:category/:id", function (req, res){
           res.render("placepage", {
             layout:"loggedin",
             place: place,
-            ratings: ratings
+            ratings: ratings,
+            userinfo: req.user
           })
         }else{
           res.render("placepage", {
