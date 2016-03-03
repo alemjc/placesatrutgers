@@ -10,6 +10,7 @@ var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
 var bodyparser = require("body-parser");
+var cookieparser = require("cookie-parser");
 var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
@@ -22,6 +23,7 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
+app.use(cookieparser());
 app.use(bodyparser.urlencoded({extended:false}));
 
 app.use(flash());
@@ -87,7 +89,7 @@ var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
 });
 
 app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
-  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) },
+  cookie : { secure : false, maxAge : (2 * 60 * 1000) },
   store: new SequelizeStore({
     db: sequelize
   })
