@@ -1,6 +1,6 @@
 /**
  * Created by alemjc on 2/22/16.
- */
+ */ 
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
