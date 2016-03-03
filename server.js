@@ -343,7 +343,10 @@ app.post("/register", function(req, res){
     });
 });
 
-
+app.post("/ratings", function(req, res){
+  console.log("-----------------------")
+  console.log(req.body);
+});
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {

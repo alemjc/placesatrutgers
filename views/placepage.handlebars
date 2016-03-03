@@ -25,6 +25,15 @@
       {{#each ratings}}
       <p><span class="stars">{{ stars }}</span> <span class="comment">{{ comment }}</span></p>
       {{/each}}
+      {{#each place}}
+      <h5>Write a Review for {{ name }}:</h5>
+      <form method="POST" action="/ratings">
+        <p><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></p>
+        <input class="hide" name="stars" value="zero">
+        <textarea id="textarea1" name="comment" class="materialize-textarea"></textarea>
+        <button class="waves-effect waves-light btn addthings">Submit</button>
+      </form>
+      {{/each}}
     </div>
   </div>
 </div>
