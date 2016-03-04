@@ -37,13 +37,13 @@
         <form class="col s12" action="/loggedin" method="POST"> <!-- make an action/method where info from this form posts to a specific route ex: action="/login" method="post"-->
           <div class="row">
             <div class="input-field col s12">
-              <input id="business_name" type="text" class="validate">
+              <input id="business_name" type="text" class="validate" name="business_name">
               <label for="business_name">Business Name</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input id="business_address" type="text" class="validate">
+              <input id="business_address" type="text" class="validate" name="business_address">
               <label for="business_address">Business Address</label>
             </div>
           </div>
@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-red btn addthings">Add Business</a>
+      <a href="#!" type="submit" class="modal-action modal-close waves-effect waves-red btn addthings">Add Business</a>
     </div>
   </div>
 
