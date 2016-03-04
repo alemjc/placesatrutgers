@@ -10,6 +10,7 @@ var LocalStrategy = require("passport-local");
 var flash = require('connect-flash');
 var bcrypt = require("bcryptjs");
 var bodyparser = require("body-parser");
+var cookieparser = require("cookie-parser");
 var SequelizeStore = require('connect-session-sequelize')(expresssession.Store);
 var PORT = process.env.PORT || 9001;
 
@@ -22,20 +23,23 @@ app.engine("handlebars", expressHandlebars({
 app.set("view engine", "handlebars");
 
 app.use("/static", express.static("public"));
+app.use(cookieparser());
 app.use(bodyparser.urlencoded({extended:false}));
 
 app.use(flash());
 
+
 passport.serializeUser(function(user, done){
-  done(null,{userName:user.userName});
+  done(null, user);
 });
 
 
 passport.deserializeUser(function(user, done){
-  done(null, {userName:user.userName});
+  done(null, user);
 });
 
-passport.use(new LocalStrategy({
+
+passport.use('local', new LocalStrategy({
     usernameField:'userName',
     passwordField:'password',
     session:true,
@@ -45,9 +49,10 @@ passport.use(new LocalStrategy({
     Users
       .findOne({where: {userName:userName}})
       .then(function(user){
+        console.log('user', user);
         if(user){
           bcrypt.compare(password, user.dataValues.password, function(err, success){
-
+            console.log('success', success);
             if(success){
               done(null,{userName:userName});
               console.log("logged in")
@@ -66,7 +71,8 @@ passport.use(new LocalStrategy({
       .catch(function(err){
         done(err);
       });
-  }));
+  }
+));
 
 
 if(process.env.NODE_ENV === 'production') {
@@ -78,23 +84,18 @@ else {
   require("dotenv").config({path:"./DBCreds.env"});
 }
 
-var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL, {
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-  }
-});
+var sequelize = new Sequelize(process.env.CLEARDB_DATABASE_URL);
 
-app.use(expresssession({secret:process.env.SECRET, resave:true, saveUninitialized:true,
-  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) },
-  store: new SequelizeStore({
-    db: sequelize
-  })
+app.use(expresssession({secret:'process.env.SECRET', resave:true, saveUninitialized:true,
+  cookie : { secure : false, maxAge : (4 * 60 * 60 * 1000) }
+  //store: new SequelizeStore({
+  //  db: sequelize
+  //})
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 var Places = sequelize.define("place", {
   name: {
@@ -210,7 +211,8 @@ app.get("/food", function (req, res) {
     if(req.isAuthenticated()){
       res.render('food', {
         layout: "loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('food', {
@@ -227,7 +229,8 @@ app.get("/entertainment", function (req, res) {
     if(req.isAuthenticated()){
       res.render('entertainment', {
         layout: "loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('entertainment', {
@@ -244,7 +247,8 @@ app.get("/shopping", function (req, res) {
     if(req.isAuthenticated()){
       res.render('shopping', {
         layout:"loggedin",
-        place: place
+        place: place,
+        userinfo: req.user
       })
     }else{
       res.render('shopping', {
@@ -270,7 +274,8 @@ app.get("/:category/:id", function (req, res){
           res.render("placepage", {
             layout:"loggedin",
             place: place,
-            ratings: ratings
+            ratings: ratings,
+            userinfo: req.user
           })
         }else{
           res.render("placepage", {
@@ -280,7 +285,7 @@ app.get("/:category/:id", function (req, res){
         }
       })
     })
-  })
+  });
   
 //end routes
 
@@ -291,13 +296,14 @@ app.get("/register", function(req, res) {
 app.get("/login", function(req, res) {
   console.log("***********************");
 
-  res.render("login",{msg:req.flash("message")});
+  //res.render("login",{msg:req.flash("message")});
+  res.render("login");
 });
 
 app.post("/login", passport.authenticate('local',{
     successRedirect:"/",
-    failureRedirect:"/login",
-    failureFlash:true
+    failureRedirect:"/login"
+    //failureFlash:true
   }
 ));
 
