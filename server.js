@@ -338,16 +338,12 @@ app.post("/register", function(req, res){
 });
 
 //dong's post req for modal, not sure how to add images, or how to create business info using the drop down menu for categories
-app.post("/loggedin", function(req. res) {
-  if(req.body.business_name === business_name) {
-    res.redirect("/loggedin?msg=This business already exists!");
-    return;
-  }
+app.post("/loggedin", function(req, res) {
   Places
-    .create({business_name:req.body.business_name, business_address:req.body.business_address})
+    .create({name:req.body.business_name, address:req.body.business_address, category:req.body.category})
     .then(function() {
-      res.redirect("/");
-    })
+    res.redirect("/");
+  })
 });
 
 
