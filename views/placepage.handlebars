@@ -40,9 +40,9 @@
     <div class="col md 12 offset-m2">
       <h5>Write a Review for {{ name }}:</h5>
       <form method="POST" action="/ratings">
-        <p><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></p>
+        <p class="starIcons"><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i></p>
         <input class="hide" name="placeId" value="{{ id }}">
-        <input class="hide" name="stars" value="0">
+        <input class="hide starInput" name="stars" value="0">
         <textarea id="textarea1" name="comment" class="materialize-textarea"></textarea>
         <button class="waves-effect waves-light btn addthings">Submit</button>
       </form>
