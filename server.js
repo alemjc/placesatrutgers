@@ -168,10 +168,7 @@ var Users = sequelize.define("user",{
 
 var Ratings = sequelize.define("rating",{
   stars: {
-    type:Sequelize.INTEGER,
-    validate: {
-      max: 5
-    }
+    type:Sequelize.INTEGER
   },
   comment:{
     type:Sequelize.STRING
@@ -327,6 +324,15 @@ app.post("/register", function(req, res){
     return;
   }
 
+  Users.findAll({
+    where: {userName: req.body.userName}
+  }).then(function(result){
+    if (result.length < 0) {
+      res.redirect("/register?msg=That user name is already taken, please choose a diffrent one.");
+      return;
+    }
+  });
+
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
     password: req.body.password, birthday:req.body.birthday})
@@ -345,6 +351,16 @@ app.post("/register", function(req, res){
 
 app.post("/ratings", function(req, res){
   console.log("-----------------------")
+  Users.findAll({
+    where: {userName: req.user.userName}
+  }).then(function (result){
+    console.log(result[0].dataValues.id);
+    Ratings
+      .create({stars: parseInt(req.body.stars), comment: req.body.comment, placeId: parseInt(req.body.placeId), userId:parseInt(result[0].dataValues.id)})
+      .then(function(){
+        res.redirect('back');
+      })
+  })
   console.log(req.body);
 });
 

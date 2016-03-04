@@ -1,3 +1,11 @@
+{{#if msg}}
+  <div class="row">
+    <div class="col s4 offset-s4">
+      <p class="errormsg">{{msg}}</p>
+    </div>
+  </div>
+{{/if}}
+
 {{#each place}}
 <div class="placepage">
   <div class="row">
@@ -21,15 +29,20 @@
       {{/each}}
       {{/each}}
     </div>
-    <div class="col md 8">
+      <div class="col md 8">
       {{#each ratings}}
       <p><span class="stars">{{ stars }}</span> <span class="comment">{{ comment }}</span></p>
       {{/each}}
       {{#each place}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col md 12 offset-m2">
       <h5>Write a Review for {{ name }}:</h5>
       <form method="POST" action="/ratings">
         <p><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></p>
-        <input class="hide" name="stars" value="zero">
+        <input class="hide" name="placeId" value="{{ id }}">
+        <input class="hide" name="stars" value="0">
         <textarea id="textarea1" name="comment" class="materialize-textarea"></textarea>
         <button class="waves-effect waves-light btn addthings">Submit</button>
       </form>
