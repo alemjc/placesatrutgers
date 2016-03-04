@@ -38,7 +38,7 @@ $(document).ready(function(){
       $(this).prevAll().addClass("fa-star-o");
       $(this).prevAll().removeClass("fa-star");
     }
-  }, ".notClicked");
+  }, ".notClicked");U
 
   $(document).on("click", ".notClicked", function(){
     $(".notClicked").removeClass("notClicked").addClass("Clicked");
