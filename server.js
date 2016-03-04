@@ -272,12 +272,14 @@ app.get("/:category/:id", function (req, res){
             layout:"loggedin",
             place: place,
             ratings: ratings,
-            userinfo: req.user
+            userinfo: req.user,
+            msg: req.query.msg
           })
         }else{
           res.render("placepage", {
             place: place,
-            ratings: ratings
+            ratings: ratings,
+            msg: req.query.msg
           })
         }
       })
@@ -351,7 +353,8 @@ app.post("/register", function(req, res){
 
 app.post("/ratings", function(req, res){
   console.log("-----------------------")
-  Users.findAll({
+  if (req.isAuthenticated()){
+    Users.findAll({
     where: {userName: req.user.userName}
   }).then(function (result){
     console.log(result[0].dataValues.id);
@@ -361,7 +364,9 @@ app.post("/ratings", function(req, res){
         res.redirect('back');
       })
   })
-  console.log(req.body);
+  }else{
+    res.redirect('back', { msg: req.session.error });
+  }
 });
 
 sequelize.sync().then(function(){
