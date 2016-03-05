@@ -279,7 +279,7 @@ app.get("/register", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("login");
+  res.render("login", {msg:req.flash("message")});
 });
 
 app.get("/logout", function(req, res){
