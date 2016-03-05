@@ -59,7 +59,7 @@ $(document).ready(function(){
 
 
   $(document).on("click", ".fa-star", function(){
-    var numItems = $('.fa-star').length;
+    var numItems = $('.starIcons .fa-star').length;
     console.log(numItems);
     $(".starInput").attr("value", numItems.toString());
   });
