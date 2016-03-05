@@ -2,20 +2,17 @@
 <div class="placepage">
   <div class="row">
     <div class="col md 2">
-      <img class="thumbs" src="{{ pictures }}">
+      <img class="placePicture" src="{{ pictures }}">
     </div>
     <div class="col md 10">
       <h3>{{ name }}</h3>
       <p>{{ address }}</p>
     </div>
   </div>
-  <div class="row">
-    <div class="col md 12 offset-m2">
-      <h5>Reviews</h5>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col md 2 offset-m2">
+  <div class="row ratingArea">
+  <div>
+  <h5 class="reviewHeader">Reviews</h5>
+    <div class="col md 2 offset-m4">
       {{#each users}}
       <p>{{ userName }}</p>
       {{/each}}
@@ -29,7 +26,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col md 12 offset-m2">
+    <div class="col md 12 offset-m4">
       <h5>Write a Review for {{ name }}:</h5>
       <form method="POST" action="/ratings">
         <p class="starIcons"><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i><i class="fa fa-star-o notClicked"></i></p>
@@ -48,7 +45,7 @@
         {{/if}}
         <button class="waves-effect waves-light btn addthings reviewBtn">Submit</button>
       </form>
-      
+    </div>
     </div>
   </div>
 </div>

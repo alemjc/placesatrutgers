@@ -3,6 +3,27 @@ nav {
     linear-gradient(
       red, darkred, #282828
     );
+    position: fixed;
+    z-index: 100;
+    top:0px;
+}
+
+.reviewHeader{
+  margin-left: 430px;
+}
+
+.ratingArea{
+  margin-top: 50px;
+  position: relative;
+  top: -170px;
+}
+
+.reviewsHeader{
+  margin-top: 20px;
+} 
+
+.placePicture{
+width: 400px;
 }
 
 .addthings {
