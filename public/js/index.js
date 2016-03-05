@@ -23,26 +23,13 @@ $(document).ready(function(){
     }
   })
   
-
+  $(document).on("click", ".starIcons .fa", function(){
+    $(this).addClass("rating");
+    $(this).prevAll().addClass("rating");
+    $(this).nextAll().removeClass("rating");
+  })
 
   $(document).on({
-    mouseenter: function () {
-      $(this).addClass("fa-star");
-      $(this).removeClass("fa-star-o");
-      $(this).prevAll().addClass("fa-star");
-      $(this).prevAll().removeClass("fa-star-o");
-    },
-    mouseleave: function () {
-      $(this).addClass("fa-star-o");
-      $(this).removeClass("fa-star");
-      $(this).prevAll().addClass("fa-star-o");
-      $(this).prevAll().removeClass("fa-star");
-    }
-  }, ".notClicked");
-
-  $(document).on("click", ".notClicked", function(){
-    $(".notClicked").removeClass("notClicked").addClass("Clicked");
-    $(document).on({
     mouseenter: function () {
       $(this).addClass("fa-star");
       $(this).removeClass("fa-star-o");
@@ -52,10 +39,14 @@ $(document).ready(function(){
       $(this).nextAll().removeClass("fa-star");
     },
     mouseleave: function () {
-      
+      $(this).addClass("fa-star-o");
+      $(this).removeClass("fa-star");
+      $(this).prevAll().addClass("fa-star-o");
+      $(this).prevAll().removeClass("fa-star");
+      $(".rating").addClass("fa-star");
+      $(".rating").removeClass("fa-star-o");
     }
-  }, ".Clicked");
-  });
+  }, ".starIcons .fa");
 
 
   $(document).on("click", ".fa-star", function(){
