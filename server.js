@@ -1,6 +1,6 @@
 /**
  * Created by alemjc on 2/22/16.
- */
+ */ 
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
@@ -168,10 +168,7 @@ var Users = sequelize.define("user",{
 
 var Ratings = sequelize.define("rating",{
   stars: {
-    type:Sequelize.INTEGER,
-    validate: {
-      max: 5
-    }
+    type:Sequelize.INTEGER
   },
   comment:{
     type:Sequelize.STRING
@@ -276,13 +273,17 @@ app.get("/:category/:id", function (req, res){
             layout:"loggedin",
             place: place,
             ratings: ratings,
-            userinfo: req.user
+            userinfo: req.user,
+            msg: req.session.error
           })
+          delete req.session.error;
         }else{
           res.render("placepage", {
             place: place,
-            ratings: ratings
+            ratings: ratings,
+            msg: req.session.error
           })
+          delete req.session.error;
         }
       })
     })
@@ -301,10 +302,17 @@ app.get("/login", function(req, res) {
   res.render("login");
 });
 
+app.get("/logout", function(req, res){
+  req.session.destroy();
+  req.logout();
+  res.redirect("/");
+
+});
+
 app.post("/login", passport.authenticate('local',{
     successRedirect:"/",
-    failureRedirect:"/login"
-    //failureFlash:true
+    failureRedirect:"/login",
+    failureFlash:true
   }
 ));
 
@@ -320,6 +328,15 @@ app.post("/register", function(req, res){
     res.redirect("/register?msg=Please fill out all fields.");
     return;
   }
+
+  Users.findAll({
+    where: {userName: req.body.userName}
+  }).then(function(result){
+    if (result.length < 0) {
+      res.redirect("/register?msg=That user name is already taken, please choose a diffrent one.");
+      return;
+    }
+  });
 
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
@@ -337,6 +354,7 @@ app.post("/register", function(req, res){
     });
 });
 
+
 //dong's post req for modal, not sure how to add images, or how to create business info using the drop down menu for categories
 app.post("/loggedin", function(req, res) {
   Places
@@ -344,6 +362,34 @@ app.post("/loggedin", function(req, res) {
     .then(function() {
     res.redirect("/");
   })
+});
+
+
+app.post("/ratings", function(req, res){
+  console.log("-----------------------")
+  if (req.isAuthenticated()){
+    Users.findAll({
+    where: {userName: req.user.userName}
+  }).then(function (result){
+    if (req.body.stars === "0"){
+      req.session.error = "You must choose a star rating to review a business";
+      res.redirect("back");
+      return;
+    }else if (req.body.comment.length < 10){
+      req.session.error = "You're review is too short, please make it at least 10 characters";
+      res.redirect("back");
+      return;
+    }
+    Ratings
+      .create({stars: parseInt(req.body.stars), comment: req.body.comment, placeId: parseInt(req.body.placeId), userId:parseInt(result[0].dataValues.id)})
+      .then(function(){
+        res.redirect("back");
+      })
+  })
+  }else{
+    req.session.error = "You must be logged in to review a business";
+    res.redirect("back");
+  }
 });
 
 
