@@ -106,17 +106,17 @@ var Places = sequelize.define("place", {
    type:Sequelize.STRING,
    allowNull:false
   },
-  pictures:{
-   type:Sequelize.STRING
-  },
-  name: {
-  type:Sequelize.STRING,
-   allowNull:false
-  },
-  address:{
-   type:Sequelize.STRING,
-   allowNull:false
-  },
+  // pictures:{ //these were repeating
+  //  type:Sequelize.STRING
+  // },
+  // name: {
+  // type:Sequelize.STRING,
+  //  allowNull:false
+  // },
+  // address:{
+  //  type:Sequelize.STRING,
+  //  allowNull:false
+  // },
   pictures:{
    type:Sequelize.STRING,
    defaultValue: "http://www.clipartbest.com/cliparts/dc8/578/dc8578Kgi.jpeg"
@@ -255,6 +255,7 @@ app.get("/shopping", function (req, res) {
   })
 });
 
+
 app.get("/:category/:id", function (req, res){
   var id = req.params.id;
   Ratings.findAll({
@@ -353,6 +354,17 @@ app.post("/register", function(req, res){
     });
 });
 
+
+//dong's post req for modal, not sure how to add images, or how to create business info using the drop down menu for categories
+app.post("/loggedin", function(req, res) {
+  Places
+    .create({name:req.body.business_name, address:req.body.business_address, category:req.body.category})
+    .then(function() {
+    res.redirect("/");
+  })
+});
+
+
 app.post("/ratings", function(req, res){
   console.log("-----------------------")
   if (req.isAuthenticated()){
@@ -379,6 +391,7 @@ app.post("/ratings", function(req, res){
     res.redirect("back");
   }
 });
+
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {

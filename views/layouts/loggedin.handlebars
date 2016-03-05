@@ -29,42 +29,42 @@
     </div>
   </nav>
 
-      <!-- Modal to add new places -->
+  <!-- Modal to add new places -->
   <div id="modal1" class="modal modal-fixed-footer">
     <div class="modal-content">
       <h4>Add a new Business</h4>
       <div class="row">
-        <form class="col s12">
+        <form class="col s12" action="/loggedin" method="POST"> <!-- make an action/method where info from this form posts to a specific route ex: action="/login" method="post"-->
           <div class="row">
             <div class="input-field col s12">
-              <input id="business_name" type="text" class="validate">
+              <input id="business_name" type="text" class="validate" name="business_name">
               <label for="business_name">Business Name</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input id="business_address" type="text" class="validate">
+              <input id="business_address" type="text" class="validate" name="business_address">
               <label for="business_address">Business Address</label>
             </div>
           </div>
           <div class="row">
             <div class="input-field col s6 offset-s3">
-              <select>
+              <select name="category">
                 <option value="" disabled selected>Select Business Category</option>
-                <option value="1">Food / Drinks</option>
-                <option value="2">Shopping</option>
-                <option value="3">Entertainment</option>
+                <option value="food">Food / Drinks</option>
+                <option value="shopping">Shopping</option>
+                <option value="entertainment">Entertainment</option>
               </select>
               <label>Select Business Category</label>
             </div>
           </div>
-        </form>
       </div>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-red btn addthings">Add Business</a>
+      <button type="submit" class="modal-action modal-close waves-effect waves-red btn addthings">Add Business</button>
     </div>
   </div>
+  </form>
 
   {{{ body }}}
 
