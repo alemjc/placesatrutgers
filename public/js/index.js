@@ -22,10 +22,47 @@ $(document).ready(function(){
       $(this).html("<i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i>")
     }
   })
-  // if ($(".stars").html() === "5"){
-  //   $(".stars").html("five")
-  // }else{
-  //   
-  // }
+  
+
+
+  $(document).on({
+    mouseenter: function () {
+      $(this).addClass("fa-star");
+      $(this).removeClass("fa-star-o");
+      $(this).prevAll().addClass("fa-star");
+      $(this).prevAll().removeClass("fa-star-o");
+    },
+    mouseleave: function () {
+      $(this).addClass("fa-star-o");
+      $(this).removeClass("fa-star");
+      $(this).prevAll().addClass("fa-star-o");
+      $(this).prevAll().removeClass("fa-star");
+    }
+  }, ".notClicked");
+
+  $(document).on("click", ".notClicked", function(){
+    $(".notClicked").removeClass("notClicked").addClass("Clicked");
+    $(document).on({
+    mouseenter: function () {
+      $(this).addClass("fa-star");
+      $(this).removeClass("fa-star-o");
+      $(this).prevAll().addClass("fa-star");
+      $(this).prevAll().removeClass("fa-star-o");
+      $(this).nextAll().addClass("fa-star-o");
+      $(this).nextAll().removeClass("fa-star");
+    },
+    mouseleave: function () {
+      
+    }
+  }, ".Clicked");
+  });
+
+
+  $(document).on("click", ".fa-star", function(){
+    var numItems = $('.fa-star').length;
+    console.log(numItems);
+    $(".starInput").attr("value", numItems.toString());
+  });
+
 });
 
