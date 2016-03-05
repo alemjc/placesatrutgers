@@ -1,5 +1,6 @@
 /**
  * Created by alemjc on 2/22/16.
+ * Authors: Jimmy Mona, Dong Son, and Jean Carlos Henriquez
  */ 
 var Sequelize = require("sequelize");
 var express = require("express");
@@ -55,7 +56,6 @@ passport.use('local', new LocalStrategy({
             console.log('success', success);
             if(success){
               done(null,{userName:userName});
-              console.log("logged in")
             }
             else{
               done(null,false, {message: "Invalid user name or password."});
@@ -96,7 +96,7 @@ app.use(expresssession({secret:'process.env.SECRET', resave:true, saveUninitiali
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+//DB Models
 var Places = sequelize.define("place", {
   name: {
   type:Sequelize.STRING,
@@ -106,17 +106,6 @@ var Places = sequelize.define("place", {
    type:Sequelize.STRING,
    allowNull:false
   },
-  // pictures:{ //these were repeating
-  //  type:Sequelize.STRING
-  // },
-  // name: {
-  // type:Sequelize.STRING,
-  //  allowNull:false
-  // },
-  // address:{
-  //  type:Sequelize.STRING,
-  //  allowNull:false
-  // },
   pictures:{
    type:Sequelize.STRING,
    defaultValue: "http://www.clipartbest.com/cliparts/dc8/578/dc8578Kgi.jpeg"
@@ -174,20 +163,16 @@ var Ratings = sequelize.define("rating",{
     type:Sequelize.STRING
   }
 });
+//End DB Models
 
+//DB relations
 Users.belongsToMany(Places,{through:Ratings});
 Places.belongsToMany(Users,{through:Ratings});
 
 //routes
 app.get("/", function (req, res) {
-  console.log("##############");
-  console.log(req.isAuthenticated());
-  console.log("##############");
     Places.findAll().then(function(place) {
       if(req.isAuthenticated()){
-        console.log("##############");
-        console.log(req.user);
-        console.log("##############");
         res.render('home', {
           layout: "loggedin",
           place: place,
@@ -288,17 +273,12 @@ app.get("/:category/:id", function (req, res){
       })
     })
   });
-  
-//end routes
 
 app.get("/register", function(req, res) {
   res.render("register", req.query);
 });
 
 app.get("/login", function(req, res) {
-  console.log("***********************");
-
-  //res.render("login",{msg:req.flash("message")});
   res.render("login");
 });
 
@@ -308,7 +288,9 @@ app.get("/logout", function(req, res){
   res.redirect("/");
 
 });
+//end routes
 
+//POSTS
 app.post("/login", passport.authenticate('local',{
     successRedirect:"/",
     failureRedirect:"/login",
@@ -317,8 +299,6 @@ app.post("/login", passport.authenticate('local',{
 ));
 
 app.post("/register", function(req, res){
-  console.log(req.body);
-
   if(req.body.userName.length < 5 || req.body.password.length < 5){
     res.redirect("/register?msg=User name password must be longer than 5 characters.");
     return;
@@ -337,7 +317,6 @@ app.post("/register", function(req, res){
       return;
     }
   });
-
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
     password: req.body.password, birthday:req.body.birthday})
@@ -354,8 +333,6 @@ app.post("/register", function(req, res){
     });
 });
 
-
-//dong's post req for modal, not sure how to add images, or how to create business info using the drop down menu for categories
 app.post("/loggedin", function(req, res) {
   Places
     .create({name:req.body.business_name, address:req.body.business_address, category:req.body.category})
@@ -364,9 +341,7 @@ app.post("/loggedin", function(req, res) {
   })
 });
 
-
 app.post("/ratings", function(req, res){
-  console.log("-----------------------")
   if (req.isAuthenticated()){
     Users.findAll({
     where: {userName: req.user.userName}
@@ -391,7 +366,7 @@ app.post("/ratings", function(req, res){
     res.redirect("back");
   }
 });
-
+//End posts
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {
