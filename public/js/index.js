@@ -22,10 +22,38 @@ $(document).ready(function(){
       $(this).html("<i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i>")
     }
   })
-  // if ($(".stars").html() === "5"){
-  //   $(".stars").html("five")
-  // }else{
-  //   
-  // }
+  
+  $(document).on("click", ".starIcons .fa", function(){
+    $(this).addClass("rating");
+    $(this).prevAll().addClass("rating");
+    $(this).nextAll().removeClass("rating");
+  })
+
+  $(document).on({
+    mouseenter: function () {
+      $(this).addClass("fa-star");
+      $(this).removeClass("fa-star-o");
+      $(this).prevAll().addClass("fa-star");
+      $(this).prevAll().removeClass("fa-star-o");
+      $(this).nextAll().addClass("fa-star-o");
+      $(this).nextAll().removeClass("fa-star");
+    },
+    mouseleave: function () {
+      $(this).addClass("fa-star-o");
+      $(this).removeClass("fa-star");
+      $(this).prevAll().addClass("fa-star-o");
+      $(this).prevAll().removeClass("fa-star");
+      $(".rating").addClass("fa-star");
+      $(".rating").removeClass("fa-star-o");
+    }
+  }, ".starIcons .fa");
+
+
+  $(document).on("click", ".fa-star", function(){
+    var numItems = $('.starIcons .fa-star').length;
+    console.log(numItems);
+    $(".starInput").attr("value", numItems.toString());
+  });
+
 });
 

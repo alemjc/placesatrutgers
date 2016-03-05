@@ -1,6 +1,7 @@
 /**
  * Created by alemjc on 2/22/16.
- */
+ * Authors: Jimmy Mona, Dong Son, and Jean Carlos Henriquez
+ */ 
 var Sequelize = require("sequelize");
 var express = require("express");
 var expressHandlebars = require("express-handlebars");
@@ -55,7 +56,6 @@ passport.use('local', new LocalStrategy({
             console.log('success', success);
             if(success){
               done(null,{userName:userName});
-              console.log("logged in")
             }
             else{
               done(null,false, {message: "Invalid user name or password."});
@@ -96,19 +96,8 @@ app.use(expresssession({secret:'process.env.SECRET', resave:true, saveUninitiali
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+//DB Models
 var Places = sequelize.define("place", {
-  name: {
-  type:Sequelize.STRING,
-   allowNull:false
-  },
-  address:{
-   type:Sequelize.STRING,
-   allowNull:false
-  },
-  pictures:{
-   type:Sequelize.STRING
-  },
   name: {
   type:Sequelize.STRING,
    allowNull:false
@@ -168,29 +157,22 @@ var Users = sequelize.define("user",{
 
 var Ratings = sequelize.define("rating",{
   stars: {
-    type:Sequelize.INTEGER,
-    validate: {
-      max: 5
-    }
+    type:Sequelize.INTEGER
   },
   comment:{
     type:Sequelize.STRING
   }
 });
+//End DB Models
 
+//DB relations
 Users.belongsToMany(Places,{through:Ratings});
 Places.belongsToMany(Users,{through:Ratings});
 
 //routes
 app.get("/", function (req, res) {
-  console.log("##############");
-  console.log(req.isAuthenticated());
-  console.log("##############");
     Places.findAll().then(function(place) {
       if(req.isAuthenticated()){
-        console.log("##############");
-        console.log(req.user);
-        console.log("##############");
         res.render('home', {
           layout: "loggedin",
           place: place,
@@ -258,6 +240,7 @@ app.get("/shopping", function (req, res) {
   })
 });
 
+
 app.get("/:category/:id", function (req, res){
   var id = req.params.id;
   Ratings.findAll({
@@ -275,41 +258,47 @@ app.get("/:category/:id", function (req, res){
             layout:"loggedin",
             place: place,
             ratings: ratings,
-            userinfo: req.user
+            userinfo: req.user,
+            msg: req.session.error
           })
+          delete req.session.error;
         }else{
           res.render("placepage", {
             place: place,
-            ratings: ratings
+            ratings: ratings,
+            msg: req.session.error
           })
+          delete req.session.error;
         }
       })
     })
   });
-  
-//end routes
 
 app.get("/register", function(req, res) {
   res.render("register", req.query);
 });
 
 app.get("/login", function(req, res) {
-  console.log("***********************");
-
-  //res.render("login",{msg:req.flash("message")});
   res.render("login");
 });
 
+app.get("/logout", function(req, res){
+  req.session.destroy();
+  req.logout();
+  res.redirect("/");
+
+});
+//end routes
+
+//POSTS
 app.post("/login", passport.authenticate('local',{
     successRedirect:"/",
-    failureRedirect:"/login"
-    //failureFlash:true
+    failureRedirect:"/login",
+    failureFlash:true
   }
 ));
 
 app.post("/register", function(req, res){
-  console.log(req.body);
-
   if(req.body.userName.length < 5 || req.body.password.length < 5){
     res.redirect("/register?msg=User name password must be longer than 5 characters.");
     return;
@@ -320,6 +309,14 @@ app.post("/register", function(req, res){
     return;
   }
 
+  Users.findAll({
+    where: {userName: req.body.userName}
+  }).then(function(result){
+    if (result.length < 0) {
+      res.redirect("/register?msg=That user name is already taken, please choose a diffrent one.");
+      return;
+    }
+  });
   Users
     .create({userName:req.body.userName, firstName:req.body.first_name, lastName:req.body.last_name,
     password: req.body.password, birthday:req.body.birthday})
@@ -336,7 +333,40 @@ app.post("/register", function(req, res){
     });
 });
 
+app.post("/loggedin", function(req, res) {
+  Places
+    .create({name:req.body.business_name, address:req.body.business_address, category:req.body.category})
+    .then(function() {
+    res.redirect("/");
+  })
+});
 
+app.post("/ratings", function(req, res){
+  if (req.isAuthenticated()){
+    Users.findAll({
+    where: {userName: req.user.userName}
+  }).then(function (result){
+    if (req.body.stars === "0"){
+      req.session.error = "You must choose a star rating to review a business";
+      res.redirect("back");
+      return;
+    }else if (req.body.comment.length < 10){
+      req.session.error = "You're review is too short, please make it at least 10 characters";
+      res.redirect("back");
+      return;
+    }
+    Ratings
+      .create({stars: parseInt(req.body.stars), comment: req.body.comment, placeId: parseInt(req.body.placeId), userId:parseInt(result[0].dataValues.id)})
+      .then(function(){
+        res.redirect("back");
+      })
+  })
+  }else{
+    req.session.error = "You must be logged in to review a business";
+    res.redirect("back");
+  }
+});
+//End posts
 
 sequelize.sync().then(function(){
   app.listen(PORT, function() {
